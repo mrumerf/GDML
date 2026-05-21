@@ -1,0 +1,23 @@
+#not-compatible {
+    /* display: grid; */
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    align-content: baseline;
+    height: 100%;
+    padding: 5em
+}
+
+#not-compatible h2,
+#not-compatible h3 {
+    color: var(--main-background-color);
+}
+
+#not-compatible h2 {
+    text-align: center;
+    font-size: 2.7rem;
+    text-transform: uppercase;
+    padding-block: 1em;
+}
+
+#not-compatible h3 {
+    font-size: 1.7rem;
+}
