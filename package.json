@@ -1,12 +1,13 @@
 {
   "name": "gdml",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "license": "ISC",
   "author": "Muhammad Umer <umer145724@gmail.com>",
   "type": "commonjs",
   "main": "api/app.js",
   "scripts": {
+    "start": "npm run extension",
     "extension": "cd extension && pnpm dev",
     "extension:build": "cd extension && pnpm build",
     "extension:package": "cd extension && pnpm package"
