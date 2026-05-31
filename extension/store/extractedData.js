@@ -1,6 +1,91 @@
 import { create } from "zustand";
 import useStore from "./index";
 
+const hardCodedData = {
+    "Zapatilla Hombre Dc Shoes Manteca 4 S (bw6)":
+    {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(5)",
+        "monthly_sales": "Nuevo  |  +50 vendidos",
+        "publicationNumber": "Publicación #3173036342DenunciarSe abrirá en una nueva ventana"
+    },
+    "Bota Borcego Niñas Nenas Livianas Calidad": {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(108)",
+        "monthly_sales": "Nuevo  |  +500 vendidos",
+        "publicationNumber": "Publicación #2910936708DenunciarSe abrirá en una nueva ventana"
+    },
+    "Zapatillas Union La (tan) Dc": {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(1)",
+        "monthly_sales": "Nuevo  |  4 vendidos",
+        "publicationNumber": "Publicación #2017538436DenunciarSe abrirá en una nueva ventana"
+    },
+    "Pantubota Mujer Corderito Cómodas Invierno": {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(3)",
+        "monthly_sales": "Nuevo  |  +25 vendidos",
+        "publicationNumber": "Publicación #3326603428DenunciarSe abrirá en una nueva ventana"
+    },
+    "Zapatillas Mujer Urbana Moda Plataforma Livianas": {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(1045)",
+        "monthly_sales": "Nuevo  |  +1000 vendidos",
+        "publicationNumber": "Publicación #1461598843DenunciarSe abrirá en una nueva ventana"
+    },
+    "Bota Borcego Niñas Nenas Livianas Calidad": {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(108)",
+        "monthly_sales": "Nuevo  |  +500 vendidos",
+        "publicationNumber": "Publicación #2910936708DenunciarSe abrirá en una nueva ventana"
+    },
+    "Cubre Zapatillas Impermeables De Silicona Reutilizables": {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "monthly_sales": "Nuevo",
+        "publicationNumber": "Publicación #3071649342DenunciarSe abrirá en una nueva ventana"
+    },
+    "Zueco Moda Con Hebilla Mujer Plataforma":
+    {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(40)",
+        "monthly_sales": "Nuevo  |  +100 vendidos",
+        "publicationNumber": "Publicación #2901488470DenunciarSe abrirá en una nueva ventana"
+    },
+    "Zapatillas Mujer Moda Plataforma Livianas Sneakers Beca":
+    {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(1300)",
+        "monthly_sales": "Nuevo  |  +5 mil vendidos",
+        "publicationNumber": "Publicación #2137320958DenunciarSe abrirá en una nueva ventana"
+    },
+    "Botitas Pantubota Pantu Bota Con Corderito": {
+        "vid": "No",
+        "noOfPics": 1,
+        "ranking": "0",
+        "reviews": "(91)",
+        "monthly_sales": "Nuevo  |  +100 vendidos",
+        "publicationNumber": "Publicación #787998571DenunciarSe abrirá en una nueva ventana"
+    }
+}
+
 export const useExtractedData = create((set, get) => ({
 
     //extracted Data
@@ -51,11 +136,10 @@ export const useExtractedData = create((set, get) => ({
                 updatedDetailedData[asin] = {
                     noOfPics: data[asin].noOfPics < 0 ? 1 : data[asin].noOfPics,
                     vid: data[asin].vid,
-                    creationDate: data[asin].creationDate,
-                    category: data[asin].category,
-                    bsr: data[asin].bsr,
                     monthly_sales: data[asin].monthly_sales,
-                    monthly_revenue: data[asin].monthly_revenue
+                    monthly_revenue: data[asin].monthly_revenue,
+                    reviews: data[asin].reviews,
+                    ranking: data[asin].ranking
                 };
             }
             return { detailedData: updatedDetailedData };
@@ -126,12 +210,12 @@ const fetchItemData = useStore.getState().fetchItemData
 
 let errorCount = 0
 
-export const functionExtractedData = create(() => ({
+export const functionExtractedData = create((set, get) => ({
 
     fetchProductData: async (dataGot, concurrency = 20) => {
         if (!dataGot?.length) return console.info("No data to fetch");
 
-        const source = (import.meta.env.DEV) ? dataGot.slice(0, 1) : dataGot
+        const source = (import.meta.env.DEV) ? dataGot.slice(0, 12) : dataGot
 
         const queue = [...source];
         let batchResults = {};
@@ -152,23 +236,42 @@ export const functionExtractedData = create(() => ({
         const worker = async () => {
             while (queue.length > 0) {
                 const item = queue.shift();
-                if (!item || useExtractedData.getState().detailedData[item.ASIN]) continue;
+                if (!item || useExtractedData.getState().detailedData[item.title]) continue;
 
                 try {
 
-                    const result = await fetchItemData(item.link, item.ASIN, {
-                        initPrice: item.price,
-                        isGetInsights: true,
-                        useInitPrice: true,
-                        credentials: 'include'
-                    });
+                    // const result = await fetchItemData(item.link, item.ASIN, {
+                    //     initPrice: item.price,
+                    //     isGetInsights: true,
+                    //     useInitPrice: true,
+                    //     credentials: 'include'
+                    // });
+
+                    const result = await new Promise(res => {
+                        setTimeout(() => {
+                            let finalResult = hardCodedData[item.title] ?? { ok: true }
+                            if (finalResult) {
+                                finalResult = {
+                                    ...finalResult,
+                                    reviews: useStore.getState().convertToNumber(finalResult.reviews),
+                                    ranking: useStore.getState().convertToNumber(finalResult.ranking),
+                                    monthly_sales: useStore.getState().convertToNumber(finalResult.monthly_sales),
+                                    publicationNumber: useStore.getState().convertToNumber(finalResult.publicationNumber),
+                                    monthly_revenue: useStore.getState().convertToNumber(item.price * useStore.getState().convertToNumber(finalResult.monthly_sales)),
+                                    ok: true
+                                }
+                            }
+                            console.log(finalResult)
+                            res(finalResult)
+                        }, Math.random() * 1000)
+                    })
 
                     if (!result.ok) {
                         errorCount++;
                         console.warn(`Error fetching data for ASIN ${item.ASIN}: ${result.reason}. Total errors: ${errorCount}`);
                     }
 
-                    batchResults[item.ASIN] = {
+                    batchResults[item.title] = {
                         ...result,
                         price: item.price || result.newPrice
                     };
@@ -181,7 +284,7 @@ export const functionExtractedData = create(() => ({
                     }
                 } catch (err) {
                     errorCount++;
-                    batchResults[item.ASIN] = { monthly_sales: 0, bsr: "Error", category: "Error", error: true };
+                    batchResults[item.title] = { monthly_sales: 0, bsr: "Error", category: "Error", error: true };
                     console.error("Fetch error", err);
                 }
             }
@@ -202,10 +305,8 @@ export const functionExtractedData = create(() => ({
             const title = item.querySelector('.poly-component__title-wrapper').textContent.trim() ?? ""
             const link = item.querySelector('.poly-component__title-wrapper a')?.href.replace('&showFromExtension=true', '') ?? ""
             const price = useExtractedData.getInitialState().findPrice(item)
-            const ranking = item.querySelector('.poly-component__review-compacted')?.textContent ?? "0"
-            const reviews = 0
             const isFull = !!item.querySelector('.poly-shipping__promise-icon--full use')
-            return { imageSrc, title, link, price, ranking, reviews, index: index + increment, isFull }
+            return { imageSrc, title, link, price, index: index + increment, isFull }
         })
     }
 }))

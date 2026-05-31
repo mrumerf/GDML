@@ -66,7 +66,7 @@ const Tbody = () => {
                     <ProductRow
                         key={index} // Use ASIN for more stable keying
                         item={item}
-                        details={detailedData[item.ASIN]} // Pass only this row's data
+                        details={detailedData[item.title]} // Pass only this row's data
                         thTdStyle={thTdStyle}
                         formatPrice={formatPrice}
                         convertToLocaleString={convertToLocaleString}
@@ -89,18 +89,17 @@ const ProductRow = memo(({
     thTdStyle,
     formatPrice,
     convertToLocaleString,
-    handleSave,
     toggleChecked
 }) => {
-    const { ASIN, imageSrc, title, link, price, ranking, reviews, index, selected } = item;
+    const { ASIN, imageSrc, title, link, price, index, selected, full } = item;
 
     // Fallback if details aren't loaded yet
     const {
-        monthly_revenue, monthly_sales, secondPrice
+        monthly_revenue, monthly_sales, secondPrice, publicationNumber: publication = 0, ranking = 0, reviews = 0
     } = details ?? {
-        monthly_revenue: 0, monthly_sales: 0
+        monthly_revenue: 0, monthly_sales: 0, publication: 0, ranking: 0, reviews: 0
     };
-
+    console.log(details)
     return (
         <tr data-index={index}>
             <td style={thTdStyle}><span>{index + 1}</span></td>
@@ -114,11 +113,9 @@ const ProductRow = memo(({
             <td style={thTdStyle}><h3>{formatPrice(monthly_revenue, undefined, undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</h3></td>
             <td style={thTdStyle}><h3>{convertToLocaleString(ranking)}</h3></td>
             <td style={thTdStyle}><h3>{convertToLocaleString(reviews)}</h3></td>
+            <td style={thTdStyle}><h3>{full ? 'Yes' : 'No'}</h3></td>
             <td style={{ ...thTdStyle, fontSize: '.75rem' }}>
-                <a target="_blank" href={link}><h3 style={{ ...titleStyle, overflow: "unset" }}>{ASIN || "Link"}</h3></a>
-            </td>
-            <td style={thTdStyle}>
-                <button onClick={() => handleSave(item, price)} style={saveButtonStyle}>Track</button>
+                <a target="_blank" href={link}><h3 style={{ ...titleStyle, overflow: "unset" }}>{publication || "Link"}</h3></a>
             </td>
         </tr>
     );

@@ -62,8 +62,8 @@ const Thead = () => {
         { key: "monthly revenue", label: "Monthly Revenue" },
         { key: "global rating", label: "Global Rating" },
         { key: "reviews", label: "Reviews" },
-        { key: "ASIN", label: "ASIN", width: "7%" },
-        { key: "track", label: "Track", sortable: false, width: "5%" },
+        { key: "full", label: "FULL (Y/N)" },
+        { key: "publication", label: "Publication", width: "7%" },
     ];
 
     return (

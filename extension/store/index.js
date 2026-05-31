@@ -383,40 +383,23 @@ const useStore = create((set, get) => ({
             if (!a || a.startsWith("javascript:"))
                 throw new Error('Link isn\'t provided or malformed link provided for ' + ASIN)
 
-            const { data } = await net.get(a, { responseType: 'text' })
+            const { vid, noOfPics, ranking, reviews, monthly_sales, publicationNumber } = await browser.runtime.sendMessage({ action: 'fetch-item-data', a, id: crypto.randomUUID() })
 
-            if (true) {
-                const blob = new Blob([data], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
+            // if (true) {
+            //     const blob = new Blob([data], { type: 'text/html' });
+            //     const url = URL.createObjectURL(blob);
 
-                window.open(url)
-            } //client said it could be use in the future for validating
-
-            const parser = new DOMParser()
-            const page = parser.parseFromString(data, 'text/html')
+            //     window.open(url)
+            // } //client said it could be use in the future for validating
 
             //wait for continue button to resolve
-            await waitForContinueButton(page)
-            console.log('continue button resolved')
-            //extracting data from page Element
-            //extracting number of pics and videos
-            const vid = Array.from(page.querySelectorAll('#altImages li')).filter(item => item.classList.contains('videoBlockIngress')).length > 0 ? "Yes" : "No"
-            const noOfPics = page.querySelectorAll('.ui-pdp-gallery input')?.length || 0
+            // await waitForContinueButton(page)
+            // console.log('continue button resolved')
 
-            //extracting title
-            const title = page.querySelector('#title')?.innerText.trim().split('  ')[0] ?? "NaN"
-            const imageSrc = page.querySelector('#altImages li img')?.src ?? page.querySelector(`img[alt="${title}"]`)?.src ?? ''
-            let price = useInitPrice ? initPrice : findPrice(page, initPrice)
-            const ranking = findRanking(page)
-            const reviews = get().convertToNumber(page.querySelector('.ui-pdp-review__amount')?.textContent)
-            console.log('reviews,', page.querySelector('.ui-pdp-review__amount')?.textContent)
-            const monthly_sales = get().convertToNumber(page.querySelector('.ui-pdp-subtitle')?.textContent)
-            const monthly_revenue = monthly_sales * price
+            const monthly_revenue = get().convertToNumber(monthly_sales) * initPrice
 
-            const publicationNumber = get().convertToNumber(page.querySelector('#denounce')?.textContent || '0')
-
-            console.log({ vid, noOfPics, title, imageSrc, price, ranking, reviews, monthly_sales, monthly_revenue })
-            return ({ mine, link: a, ASIN, vid, noOfPics: Number(noOfPics) < 0 ? 1 : noOfPics, title, imageSrc, price, ranking, reviews, monthly_revenue, monthly_sales, ok: true })
+            console.log({ vid, noOfPics, ranking, reviews, monthly_sales, monthly_revenue, publicationNumber })
+            return ({ mine, link: a, ASIN, vid, noOfPics: Number(noOfPics) < 0 ? 1 : noOfPics, ranking, reviews, monthly_revenue, monthly_sales, ok: true, publicationNumber })
 
         } catch (error) {
             if (error.name === 'AbortError')

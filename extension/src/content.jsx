@@ -33,11 +33,12 @@ const matches = ["<all_urls>"]
 
 export default defineContentScript({
     matches,
-    excludeMatches: ["https://*.fiverr.com/*", "https://*.upwork.com/*", "https://chatgpt.com/*", "*://*.gemini.com/*", "*://*.google.com/*", "*://*.github.com/*", "*://*.wxt.dev/*"],
+    excludeMatches: ["https://*.fiverr.com/*", "https://*.upwork.com/*", "https://*.chatgpt.com/*", "*://*.gemini.com/*", "*://*.google.com/*", "*://*.github.com/*", "*://*.wxt.dev/*"],
     // 2. Set cssInjectionMode
     cssInjectionMode: 'ui',
 
     async main(ctx) {
+        console.log('content script loaded')
         // 3. Define your UI
         const ui = await createShadowRootUi(ctx, {
             name: 'example-ui',

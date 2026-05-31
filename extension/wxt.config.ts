@@ -15,7 +15,11 @@ export default defineConfig({
             "unlimitedStorage",
             "downloads",
             "browsingData",
-            "cookies"
+            "cookies",
+            'offscreen',
+            'declarativeNetRequestWithHostAccess',
+            'scripting',
+            'browsingData'
         ],
         action: {}
     }

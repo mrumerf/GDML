@@ -67,7 +67,7 @@ const ExtractedDataTab = () => {
                     <THead />
                     <TBody />
                 </table >
-                {extractedData.length <= (Array.from(document.querySelectorAll('[data-component-type="s-search-result"]')).filter(item => !item.querySelector('[aria-label="View Sponsored information or leave ad feedback"]'))).length && extractedData.length > 0 && <button style={buttonStyle} data-href={nextPageUrl} onClick={handleButton}>Add results from the next page</button>}
+                <button style={buttonStyle} data-href={nextPageUrl} onClick={handleButton}>Add results from the next page</button>
             </>
         ) : (
             <NotCompatible />

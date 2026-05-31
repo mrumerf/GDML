@@ -10,10 +10,9 @@ const Inputs = () => {
     const convertToLocaleString = useStore(s => s.convertToLocaleString)
     const formatPrice = useStore(s => s.formatPrice)
     const marketplace = useStore(s => s.marketplace)
-    const getFreeShippingInfo = useStore(s => s.getFreeShippingInfo)
     const hasResults = useStore(s => s.hasResults)
 
-    const { setResultsAndFbaResults, fbaResults } = useHeaders() //these values are here for a good reason
+    const { fbaResults } = useHeaders() //these values are here for a good reason
     const { extractedData, findCompetitors, detailedData, firstPageData } = useExtractedData()
 
     //use state hook
@@ -48,9 +47,9 @@ const Inputs = () => {
 
             if (result && result != "0") setResultsShown(result)
         }
-        const searchParams = new URLSearchParams(location.search)
-        const page = searchParams.get('page') ?? 1
-        setPageNumber(page)
+
+        const pageNumber = document.querySelector('.andes-pagination__button.andes-pagination__button--current')?.textContent ?? 0
+        setPageNumber(convertToNumber(pageNumber))
 
     }, [])
 
@@ -119,7 +118,7 @@ const Inputs = () => {
         if (!extractedData.length) return;
 
         // Extract ASINs from extractedData
-        const asinSet = new Set(extractedData.map(item => item.ASIN));
+        const asinSet = new Set(extractedData.map(item => item.title));
 
         // Filter detailedData by ASIN keys
         const filteredDetails = Object.keys(detailedData)
@@ -181,7 +180,7 @@ const Inputs = () => {
 
                         <div className='absolute-container'>
                             <input type="checkbox" readOnly checked={!!full} />
-                            <span >FBA</span>
+                            <span className='full-text'>Full</span>
                             <span className='short-name'>{marketplace.shortName}</span>
                         </div>
 
@@ -194,13 +193,13 @@ const Inputs = () => {
 
             <div className='inner-container second'>
                 <div title='Total number of listings' className={`outer-wrapper a`} >
-                    <span className="span-title" style={{ color: getColor('n-nbc', results, '#000') }} >Results</span>
+                    <span className="span-title" style={{ color: getColor('n-nbc', results, '#000') }} >Nb of Results</span>
                     <div className="input-span" style={{ backgroundColor: getColor('n-nbc', results, '#fff') }}>{convertToLocaleString(results)}</div></div>
                 <div title='Number of listings delivered thru FBA' className={`outer-wrapper b`}>
-                    <span className="span-title" style={{ color: getColor('fr', fbaResults, '#000') }} >FBA Results</span>
+                    <span className="span-title" style={{ color: getColor('fr', fbaResults, '#000') }} >FULL Results</span>
                     <div className="input-span" style={{ backgroundColor: getColor('fr', fbaResults, '#fff') }}>{convertToLocaleString(fbaResults)}</div></div>
                 <div title='Minimum “Monthly sales” to appear on the “first page of results”' className={`outer-wrapper c`}>
-                    <span className="span-title" style={{ color: getColor('fp', firstPage, '#000') }} >First Page</span>
+                    <span className="span-title" style={{ color: getColor('fp', firstPage, '#000') }} >Minimum Sales</span>
                     <div className="input-span" style={{ backgroundColor: getColor('fp', firstPage, '#fff') }}>{convertToLocaleString(firstPage)}</div></div>
                 <div title='Average Monthly Revenue of the listings displayed on this page' className={`outer-wrapper d`}>
                     <span className="span-title" style={{ color: getColor('amr', avMonthlyRevenue, '#000') }} >Avg Monthly Revenue</span>
